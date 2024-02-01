@@ -1,0 +1,43 @@
+# Note: this file should be putted directly into system/sepolicy/private
+# Also SEPolicy must be patched to prevent neverallows' errors during the build
+type valord, domain, coredomain, mlstrustedsubject;
+type valor_db, file_type, system_file_type;
+type valord_exec, exec_type, file_type, system_file_type;
+
+# Tell that valord is a daemon
+init_daemon_domain(valord)
+domain_auto_trans(init, valord_exec, valord)
+
+# Allow reading own files
+allow valord self:file { open read getattr };
+allow valord valor_db:file { read };
+
+# Allow to scan processes
+allow valord self:global_capability_class_set sys_ptrace;
+allow valord kernel:file { read };
+allow valord kernel:lnk_file { read };
+allow valord init:file { read };
+allow valord init:lnk_file { read };
+allow valord su:file { read };
+allow valord su:lnk_file { read };
+allow valord kernel:dir { search };
+allow valord init:dir { search };
+allow valord su:dir { search };
+allow valord self:global_capability_class_set  dac_override;
+allow valord self:global_capability_class_set  dac_read_search;
+
+# Allow to calculate checksums of app data files
+allow valord app_data_file:file { open read getattr };
+
+# Allow to kill processes
+allow valord self:global_capability_class_set  kill;
+
+# Allow to read files
+allow valord appdomain:process { sigkill };
+allow valord appdomain:file    { open read getattr };
+allow valord appdomain:dir     { search getattr };
+allow valord appdomain:lnk_file { read getattr };
+allow valord untrusted_app:process { sigkill };
+allow valord untrusted_app:file    { open read getattr };
+allow valord untrusted_app:dir     { search getattr };
+allow valord untrusted_app:lnk_file { read getattr };
