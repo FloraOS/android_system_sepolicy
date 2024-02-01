@@ -9,6 +9,7 @@ neverallow {
   -artd # compile secondary dex files
   -installd
   -mediaprovider_app
+  -valord
 } { app_data_file privapp_data_file }:file ~{ read write map getattr ioctl lock append };
 
 neverallow {
