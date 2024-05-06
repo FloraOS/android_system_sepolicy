@@ -53,7 +53,7 @@ neverallow {
     -profcollectd
     -simpleperf_boot
     -traced_perf
-} valor_db:file { open read getattr }
+} valor_db:file { open read getattr };
 
 # Do not audit opening files
 dontaudit valord file_type:file open;
