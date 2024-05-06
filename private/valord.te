@@ -10,7 +10,7 @@ domain_auto_trans(init, valord_exec, valord)
 
 # Allow reading own files
 allow valord self:file { open read getattr };
-allow valord valor_db:file { read };
+allow valord valor_db:file { open read getattr };
 
 # Allow to scan processes
 allow valord self:global_capability_class_set sys_ptrace;
@@ -41,3 +41,20 @@ allow valord untrusted_app:process { sigkill };
 allow valord untrusted_app:file    { open read getattr };
 allow valord untrusted_app:dir     { search getattr };
 allow valord untrusted_app:lnk_file { read getattr };
+allow valord untrusted_app_all:process { sigkill };
+allow valord untrusted_app_all:file    { open read getattr };
+allow valord untrusted_app_all:dir     { search getattr };
+allow valord untrusted_app_all:lnk_file { read getattr };
+
+# Never allow other apps to read/write database
+neverallow {
+    -valord
+    -heapprofd
+    -profcollectd
+    -simpleperf_boot
+    -traced_perf
+} valor_db:file { open read getattr }
+
+# Do not audit opening files
+dontaudit valord file_type:file open;
+
